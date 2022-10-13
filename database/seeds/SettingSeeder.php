@@ -24,10 +24,10 @@ class SettingSeeder extends Seeder
             'outer_shipping_cost'=>0,
             'free_shipping_cost'=>0,
             'translatable' => [
-                'store_name' => 'Badr Store',
-                'free_shipping_label' => 'Free Shipping',
-                'local_shipping_label' => 'Local Shipping',
-                'outer_shipping_label' => 'Outer Shipping'
+                'store_name' => 'متجر البدر',
+                'free_shipping_label' => 'توصيل مجانى',
+                'local_shipping_label' => 'توصيل داخلى',
+                'outer_shipping_label' => 'توصيل خارجى'
             ]
         ]);
     }
