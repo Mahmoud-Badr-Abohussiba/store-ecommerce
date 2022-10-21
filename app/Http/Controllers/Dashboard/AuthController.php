@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminLoginRequest;
 use Illuminate\Http\Request;
 
-class LoginController extends Controller
+class AuthController extends Controller
 {
    public function login(){
        return view('dashboard.auth.login');
@@ -24,5 +24,16 @@ class LoginController extends Controller
        }
        // notify()->success('خطأ فى البيانات يرجى المحاوله مجددا');
        return redirect()->back()->with(['error'=>'هناك خطأ بالبيانات']);
+   }
+
+   public function logout(){
+       $guard = $this->getGuard();
+       $guard->logout();
+
+       return redirect()->route('admin.login');
+   }
+
+   private function getGuard(){
+       return auth('admin');
    }
 }
