@@ -26,6 +26,10 @@ Route::group(
         Route::get('/', 'DashboardController@index')->name('admin.dashboard');
         Route::get('logout','AuthController@logout')->name('admin.logout');
 
+        Route::group(['prefix'=>'profile'], function(){
+            Route::get('edit','ProfileController@editProfile')->name('edit.profile');
+            Route::put('update','ProfileController@updateProfile')->name('update.profile');
+        });
 
         Route::group(['prefix' => 'settings'], function () {
             Route::get('shipping-methods/{type}', 'SettingsController@editShippingMethod')->name('edit.shipping.method');
