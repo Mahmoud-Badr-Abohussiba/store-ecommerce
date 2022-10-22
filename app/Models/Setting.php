@@ -24,6 +24,12 @@ class Setting extends Model
     protected $fillable = ['key','is_translatable','plain_value'];
 
     /**
+     * The attributes that should be hidden for serialization.
+     *@var array
+     */
+    protected $hidden=['translations'];
+
+    /**
      * The attributes that should be cast to native types.
      *@var array
      */
