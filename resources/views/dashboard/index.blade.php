@@ -1,5 +1,9 @@
 @extends('layouts.admin')
 @section('content')
+
+    @include('dashboard.includes.alerts.success')
+    @include('dashboard.includes.alerts.errors')
+
     <div class="app-content content">
         <div class="content-wrapper">
             <div class="content-header row">
