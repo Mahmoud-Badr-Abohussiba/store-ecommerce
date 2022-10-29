@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Controllers\Enum\CategoryType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -26,7 +27,9 @@ class CategoryRequest extends FormRequest
     {
         $slug = $this->route()->parameter('slug');
         return [
-            'type'=>'in:main,sub',
+            'type'=>[
+                Rule::in(CategoryType::mainCategory,CategoryType::subCategory)
+            ],
             'name'=>'required',
             'slug' => ['min:1|unique:news,slug,' .$slug,],
             'photo' => 'required_without:id|mimes:jpg,jpeg,png',
