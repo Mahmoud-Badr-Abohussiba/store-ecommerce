@@ -17,6 +17,7 @@ class CreateCategoriesTable extends Migration
             $table->id();
             $table->foreignId('parent_id')->nullable();
             $table->string('slug')->unique();
+            $table->string('photo')->nullable();
             $table->boolean('is_active');
             $table->timestamps();
 

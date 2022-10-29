@@ -11,7 +11,7 @@
                                 </li>
                                 <li class="breadcrumb-item"><a href="{{route('admin.brands')}}"> الماركات التجاريه </a>
                                 </li>
-                                <li class="breadcrumb-item active"> تعديل - {{$brand -> name}}
+                                <li class="breadcrumb-item active"> تعديل - {{$tag -> name}}
                                 </li>
                             </ol>
                         </div>
@@ -42,43 +42,23 @@
                                 @include('dashboard.includes.alerts.errors')
                                 <div class="card-content collapse show">
                                     <div class="card-body">
-                                        <form class="form" action="{{route('admin.brands.update', $brand->id)}}"
+                                        <form class="form" action="{{route('admin.tags.update', $tag->slug)}}"
                                               method="post"
                                               enctype="multipart/form-data">
                                             @csrf
                                             @method('PUT')
 
-                                            <input name="id" value="{{$brand->id}}" type="hidden">
-
-                                            <div class="form-group">
-                                                <div class="text-center">
-                                                    <img src="{{asset('assets/images/brands/'.$brand->photo)}}"
-                                                         class="rounded-circle height-150"
-                                                         alt="صورة الماركه">
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label>اختيار صوره اخرى</label>
-                                                <label id="projectinput7" class="file center-block">
-                                                    <input type="file" id="file" name="photo">
-                                                    <span class="file-custom"></span>
-                                                </label>
-                                                @error('photo')
-                                                <span class="text-danger">{{$message}}</span>
-                                                @enderror
-                                            </div>
+                                            <input name="id" value="{{$tag->id}}" type="hidden">
 
                                             <div class="form-body">
-
-                                                <h4 class="form-section"><i class="ft-home"></i>بيانات الماركه</h4>
+                                                <h4 class="form-section"><i class="ft-home"></i>بيانات الشعار</h4>
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label for="projectinput1">الاسم</label>
-                                                            <input type="text" value="{{$brand-> name}}" id="name"
+                                                            <input type="text" value="{{$tag-> name}}" id="name"
                                                                    class="form-control"
-                                                                   placeholder=" {{$brand-> name}}"
+                                                                   placeholder="{{$tag-> name}}"
                                                                    name="name">
                                                             @error("name")
                                                             <span class="text-danger">{{$message}}</span>
@@ -86,28 +66,22 @@
                                                         </div>
                                                     </div>
 
-                                                </div>
-
-                                                <div class="row">
                                                     <div class="col-md-6">
-                                                        <div class="form-group mt-1">
-                                                            <input type="checkbox"
-                                                                   value="{{$brand->is_active}} "
-                                                                   id="switcheryColor4"
-                                                                   class="switchery" data-color="success"
-                                                                   @if($brand->is_active==1)checked @endif
-                                                                   name="is_active"/>
-                                                            <label for="switcheryColor4"
-                                                                   class="card-title ml-1">الحاله</label>
-
-                                                            @error("is_active")
+                                                        <div class="form-group">
+                                                            <label for="projectinput1"> اسم بالرابط
+                                                            </label>
+                                                            <input type="text" id="slug"
+                                                                   class="form-control"
+                                                                   placeholder="{{$tag->slug}}"
+                                                                   value="{{$tag->slug}}"
+                                                                   name="slug">
+                                                            @error("slug")
                                                             <span class="text-danger">{{$message}}</span>
                                                             @enderror
                                                         </div>
                                                     </div>
 
                                                 </div>
-
                                             </div>
 
                                             <div class="form-actions">
