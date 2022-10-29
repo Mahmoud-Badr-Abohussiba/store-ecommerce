@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Enum\CategoryType;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Illuminate\Auth\Events\Validated;
@@ -15,11 +16,11 @@ class CategoryController extends Controller
     public function index($type = null)
     {
         switch ($type) {
-            case 'main':
+            case CategoryType::mainCategory:
                 $categories = Category::parent()->orderBy('id', 'DESC')->paginate(PAGINATION_COUNT);
                 return view('dashboard.categories.index', compact('categories', 'type'));
                 break;
-            case 'sub':
+            case CategoryType::subCategory:
                 $categories = Category::child()->orderBy('id', 'DESC')->paginate(PAGINATION_COUNT);
                 return view('dashboard.categories.index', compact('categories', 'type'));
                 break;
@@ -46,7 +47,7 @@ class CategoryController extends Controller
 
         if($request->has('type')) {
             switch ($request->type) {
-                case 'main':
+                case CategoryType::mainCategory:
                     $request->request->add(['parent_id' => null]);
                     break;
                 default :
@@ -107,7 +108,7 @@ class CategoryController extends Controller
 
         if($request->has('type')) {
             switch ($request->type) {
-                case 'main':
+                case CategoryType::mainCategory:
                     $request->request->add(['parent_id' => null]);
                     break;
                 default :

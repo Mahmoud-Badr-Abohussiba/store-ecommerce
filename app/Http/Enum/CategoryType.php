@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Enum;
+namespace App\Http\Enum;
 
 final class CategoryType extends \Spatie\Enum\Enum
 {
