@@ -8,8 +8,12 @@ function getCssFolder()
 }
 
 function uploadImage($folder,$image){
-    \Illuminate\Support\Facades\Storage::disk('brands')->put('/',$image);
+    \Illuminate\Support\Facades\Storage::disk($folder)->put('/',$image);
     $filename = $image->hashName();
-    $path = 'images/'.$folder.'/'.$filename;
-    return $path;
+    return $filename;
+}
+
+function deleteImage($folder,$image){
+    \Illuminate\Support\Facades\Storage::disk($folder)->delete('/'.$image);
+
 }

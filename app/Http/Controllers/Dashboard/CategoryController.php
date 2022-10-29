@@ -8,10 +8,11 @@ use App\Models\Category;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    public function index($type)
+    public function index($type = null)
     {
         switch ($type) {
             case 'main':
@@ -22,66 +23,72 @@ class CategoryController extends Controller
                 $categories = Category::child()->orderBy('id', 'DESC')->paginate(PAGINATION_COUNT);
                 return view('dashboard.categories.index', compact('categories', 'type'));
                 break;
+            case null:
+            case 'all':
+                $categories = Category::query()->orderBy('id', 'DESC')->paginate(PAGINATION_COUNT);
+                $type = 'all';
+                return view('dashboard.categories.index', compact('categories', 'type'));
+                break;
             default :
                 return redirect()->back()->with(['error' => 'هناك خطأ ما يرجى المحاوله فيما بعد']);
         }
 
     }
 
-    public function create($type)
+    public function create()
     {
-        switch ($type) {
-            case 'main':
-                return view('dashboard.categories.create', compact('type'));
-                break;
-            case 'sub':
-                $categories = Category::parent()->orderBy('id', 'DESC')->paginate(PAGINATION_COUNT);
-                return view('dashboard.categories.create', compact('type', 'categories'));
-                break;
-            default :
-                return redirect() - back()->with(['error' => 'هناك خطأ ما يرجى المحاوله فيما بعد']);
-        }
+        $categories = Category::parent()->orderBy('id', 'DESC')->get();
+        return view('dashboard.categories.create', compact('categories'));
     }
 
-    public function store(CategoryRequest $request, $type)
+    public function store(CategoryRequest $request)
     {
-        switch ($type) {
-            case 'main':
-                break;
-            case 'sub':
-                $request->validate([
-                    'parent_id' => 'required|exists:categories,id'
-                ]);
-                break;
-            default:
-                return redirect()->back()->with(['error' => 'هناك خطأ ما يرجى المحاوله فيما بعد']);
+
+        if($request->has('type')) {
+            switch ($request->type) {
+                case 'main':
+                    $request->request->add(['parent_id' => null]);
+                    break;
+                default :
+                    $request->validate(['parent_id' => 'required|exists:categories,id']);
+            }
         }
+
+        if (!$request->has('is_active'))
+            $request->request->add(['is_active' => 0]);
+        else
+            $request->request->add(['is_active' => 1]);
+
 
         try {
-            if (!$request->has('is_active'))
-                $request->request->add(['is_active' => 0]);
-            else
-                $request->request->add(['is_active' => 1]);
-
+            $photo = $request->file('photo');
+            $fileName = '';
+            if ($photo) {
+                $fileName = uploadImage('categories', $photo);
+            }
 
             DB::beginTransaction();
+
             $category = Category::create([
-                'slug' => $request->slug,
+                'slug' => Str::slug($request->input('name') . Str::random(5), '-'),
                 'is_active' => $request->is_active,
+                'photo' => $fileName,
                 'parent_id' => $request->parent_id,
             ]);
             $category->name = $request->name;
             $category->save();
             DB::commit();
-            return redirect()->route('admin.categories', $type)->with(['success' => 'تم الاضافه بنجاح']);
+
+
+            return redirect()->route('admin.categories')->with(['success' => 'تم الاضافه بنجاح']);
         } catch (\Exception $ex) {
-            return redirect()->route('admin.categories', $type)->with(['error' => 'هناك خطأ ما يرجى المحاوله فيما بعد']);
+            return redirect()->route('admin.categories')->with(['error' => 'هناك خطأ ما يرجى المحاوله فيما بعد']);
         }
     }
 
-    public function edit($id)
+    public function edit($slug)
     {
-        $category = Category::find($id);
+        $category = Category::query()->where('slug', $slug)->first();
 
         if (!$category)
             return redirect()->route('admin.categories')->with(['error' => 'هذا القسم غير موجود']);
@@ -91,25 +98,21 @@ class CategoryController extends Controller
         return view('dashboard.categories.edit', compact('category', 'categories'));
     }
 
-    public function update(CategoryRequest $request, $id)
+    public function update(CategoryRequest $request, $slug)
     {
 
-        $category = Category::find($id);
+        $category = Category::query()->where('slug', $slug)->first();
         if (!$category)
             return redirect()->route('admin.categories')->with(['error' => 'هذا القسم غير موجود']);
 
-        switch ($request->type) {
-            case 'main':
-                break;
-            case 'sub':
-                if ($request->has('parent_id')) {
-                    $request->validate(['parent_id' => 'exists:categories,id']);
-                } else {
-                    $request->request->add(['parent_id' => $category->parent_id, 'type' => 'main']);
-                }
-                break;
-            default:
-                return redirect()->back()->with(['error' => 'هناك خطأ ما يرجى المحاوله فيما بعد']);
+        if($request->has('type')) {
+            switch ($request->type) {
+                case 'main':
+                    $request->request->add(['parent_id' => null]);
+                    break;
+                default :
+                    $request->validate(['parent_id' => 'required|exists:categories,id']);
+            }
         }
 
         if (!$request->has('is_active'))
@@ -119,8 +122,18 @@ class CategoryController extends Controller
 
         try {
 
+            if ($request->hasFile('photo')) {
+                deleteImage('categories', $category->photo);
+                $photo = uploadImage('categories', $request->file('photo'));
+            } else $photo = $category->photo;
+
+
             DB::beginTransaction();
-            $category->update($request->only(['slug', 'is_active', 'parent_id']));
+            $category->update($request->only(['is_active', 'parent_id']));
+            $category->update([
+                'slug' => $request->slug,
+                'photo' => $photo,
+            ]);
             $category->name = $request->name;
             $category->save();
             DB::commit();
@@ -132,23 +145,19 @@ class CategoryController extends Controller
 
     }
 
-    public function destroy($id, $type)
+    public function destroy($slug)
     {
-        if ($type == 'sub' | $type == 'main') {
-            $category = Category::find($id);
+            $category = Category::query()->where('slug', $slug)->first();
             if (!$category)
-                return redirect()->route('admin.categories', $type)->with(['error' => 'هذا القسم غير موجود']);
+                return redirect()->back()->with(['error' => 'هذا القسم غير موجود']);
 
             try {
+                deleteImage('categories', $category->photo);
                 $category->delete();
-                return redirect()->route('admin.categories', $type)->with(['success' => 'تم الحذف بنجاح']);
+                return redirect()->back()->with(['success' => 'تم الحذف بنجاح']);
             } catch (\Exception $ex) {
-                return redirect()->route('admin.categories', $type)->with(['error' => 'هناك خطأ ما يرجى المحاوله فيما بعد']);
+                return redirect()->back()->with(['error' => 'هناك خطأ ما يرجى المحاوله فيما بعد']);
             }
-
-        } else {
-            return redirect()->back()->with(['error' => 'هناك خطأ ما يرجى المحاوله فيما بعد']);
-        }
     }
 
 }

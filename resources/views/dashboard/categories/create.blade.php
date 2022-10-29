@@ -12,7 +12,7 @@
                                 <li class="breadcrumb-item"><a href="{{route('admin.categories','main')}}"> الاقسام
                                         الرئيسية </a>
                                 </li>
-                                <li class="breadcrumb-item"><a href="{{route('admin.categories','main')}}"> الاقسام
+                                <li class="breadcrumb-item"><a href="{{route('admin.categories','sub')}}"> الاقسام
                                         الفرعية </a>
                                 </li>
                                 <li class="breadcrumb-item active">اضافة قسم
@@ -46,7 +46,7 @@
                                 @include('dashboard.includes.alerts.errors')
                                 <div class="card-content collapse show">
                                     <div class="card-body">
-                                        <form class="form" action="{{route('admin.categories.store', $type)}}"
+                                        <form class="form" action="{{route('admin.categories.store')}}"
                                               method="post"
                                               enctype="multipart/form-data">
                                             @csrf
@@ -66,7 +66,7 @@
 
                                                 <h4 class="form-section"><i class="ft-home"></i>بيانات القسم</h4>
                                                 <div class="row">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-5">
                                                         <div class="form-group">
                                                             <label for="projectinput1">الاسم</label>
                                                             <input type="text" value="{{old('name')}}" id="name"
@@ -79,59 +79,77 @@
                                                         </div>
                                                     </div>
 
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group mt-1">
+                                                            <input type="radio"
+                                                                   name="type"
+                                                                   value="main"
+                                                                   checked
+                                                                   class="switchery"
+                                                                   data-color="success"
+                                                            />
+                                                            <label
+                                                                class="card-title ml-1">
+                                                                قسم رئيسي
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <div class="form-group mt-1">
+                                                            <input type="radio"
+                                                                   name="type"
+                                                                   value="sub"
+                                                                   class="switchery" data-color="success"
+                                                            />
+
+                                                            <label
+                                                                class="card-title ml-1">
+                                                                قسم فرعي
+                                                            </label>
+
+                                                        </div>
+                                                    </div>
+
                                                     <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="projectinput1">الرابط </label>
-                                                            <input type="text" value="{{old('slug')}} " id="slug"
-                                                                   class="form-control"
-                                                                   placeholder="{{old('slug')}}"
-                                                                   name="slug">
-                                                            @error("slug")
-                                                            <span class="text-danger">{{$message}}</span>
+                                                        <div class="form-group mt-1">
+                                                            <label for="switcheryColor4"
+                                                                   class="card-title ml-1">الحالة </label>
+                                                            <input type="checkbox" value="1"
+                                                                   name="is_active"
+                                                                   id="switcheryColor4"
+                                                                   class="switchery" data-color="success"
+                                                                   checked/>
+
+                                                            @error("is_active")
+                                                            <span class="text-danger">{{$message }}</span>
                                                             @enderror
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group mt-1">
-                                                            <input type="checkbox"
-                                                                   value="{{old('is_active')}} "
-                                                                   id="switcheryColor4"
-                                                                   class="switchery" data-color="success"
-                                                                   @if(old('is_active'))checked @endif
-                                                                   name="is_active"/>
-                                                            <label for="switcheryColor4"
-                                                                   class="card-title ml-1">الحاله</label>
-
-                                                            @error("is_active")
-                                                            <span class="text-danger">{{$message}}</span>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-
-                                                        @if($type=='sub')
-                                                            <div class="form-group">
-                                                                <label for="projectinput1">القسم الاساسى </label>
-                                                                <select  class=" select2 form-control"  name="parent_id">
-                                                                    <option value="" disabled selected>اختار القسم الرئيسى</option>
-                                                                    @foreach($categories as $category)
+                                                    <div class="col-md-12  hidden" id="cats_list">
+                                                        <div class="form-group" >
+                                                            <label for="projectinput1">القسم الاساسى </label>
+                                                            <select  class=" select2 form-control"  name="parent_id">
+                                                                <option value="" disabled selected>اختار القسم الرئيسى</option>
+                                                                @foreach($categories as $category)
                                                                     <option class="dropdown-item" value="{{$category->id}}">
                                                                         {{$category->name}}
                                                                     </option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                                @error("parent_id")
-                                                                <span class="text-danger">{{$message}}</span>
-                                                                @enderror
-                                                        @endif
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        @error("parent_id")
+                                                        <span class="text-danger">{{$message}}</span>
+                                                        @enderror
                                                     </div>
-
                                                 </div>
+
 
                                             </div>
 
@@ -156,3 +174,16 @@
         </div>
     </div>
 @endsection
+@section('script')
+
+    <script>
+        $('input:radio[name="type"]').change(
+            function(){
+                if (this.checked && this.value == 'sub') {  // 1 if main cat - 2 if sub cat
+                    $('#cats_list').removeClass('hidden');
+                }else{
+                    $('#cats_list').addClass('hidden');
+                }
+            });
+    </script>
+@stop

@@ -24,31 +24,23 @@
 
 
             <li class="nav-item"><a href=""><i class="la la-group"></i>
-                    <span class="menu-title" data-i18n="nav.dash.main">الاقسام الرئيسيه </span>
+                    <span class="menu-title" data-i18n="nav.dash.main">الاقسام </span>
                     <span
-                        class="badge badge badge-danger badge-pill float-right mr-2">{{\App\Models\Category::parent()->count()}}</span>
+                        class="badge badge badge-danger badge-pill float-right mr-2">{{\App\Models\Category::all()->count()}}</span>
                 </a>
                 <ul class="menu-content">
+                    <li class="active"><a class="menu-item" href="{{route('admin.categories','all')}}"
+                                          data-i18n="nav.dash.ecommerce"> عرض الكل </a>
+                    </li>
                     <li class="active"><a class="menu-item" href="{{route('admin.categories','main')}}"
-                                          data-i18n="nav.dash.ecommerce"> عرض الكل </a>
-                    </li>
-                    <li><a class="menu-item" href="{{route('admin.categories.create','main')}}" data-i18n="nav.dash.crypto">أضافة
-                             قسم جديد </a>
-                    </li>
-                </ul>
-            </li>
+                                          data-i18n="nav.dash.ecommerce"> عرض الاقسام الرئيسيه </a>
 
-            <li class="nav-item"><a href=""><i class="la la-group"></i>
-                    <span class="menu-title" data-i18n="nav.dash.main">الاقسام الفرعية   </span>
-                    <span
-                        class="badge badge badge-danger badge-pill float-right mr-2">{{\App\Models\Category::whereNotNull('parent_id')->count()}}</span>
-                </a>
-                <ul class="menu-content">
-                    <li class="active"><a class="menu-item" href="{{route('admin.categories','sub')}}"
-                                          data-i18n="nav.dash.ecommerce"> عرض الكل </a>
                     </li>
-                    <li><a class="menu-item" href="{{route('admin.categories.create','sub')}}" data-i18n="nav.dash.crypto">أضافة
-                            قسم فرعي جديد </a>
+                    <li class="active"><a class="menu-item" href="{{route('admin.categories','sub')}}"
+                                          data-i18n="nav.dash.ecommerce"> عرض الاقسام الفرعيه </a>
+                    </li>
+                    <li><a class="menu-item" href="{{route('admin.categories.create')}}" data-i18n="nav.dash.crypto">أضافة
+                             قسم جديد </a>
                     </li>
                 </ul>
             </li>
@@ -63,6 +55,21 @@
                                           data-i18n="nav.dash.ecommerce"> عرض الكل </a>
                     </li>
                     <li><a class="menu-item" href="{{route('admin.brands.create')}}" data-i18n="nav.dash.crypto">أضافة ماركة جديد </a>
+                    </li>
+                </ul>
+            </li>
+
+
+            <li class="nav-item"><a href=""><i class="la la-group"></i>
+                    <span class="menu-title" data-i18n="nav.dash.main">الشعارات </span>
+                    <span
+                        class="badge badge badge-danger badge-pill float-right mr-2">{{\App\Models\Tag::all()->count()}}</span>
+                </a>
+                <ul class="menu-content">
+                    <li class="active"><a class="menu-item" href="{{route('admin.tags')}}"
+                                          data-i18n="nav.dash.ecommerce"> عرض الكل </a>
+                    </li>
+                    <li><a class="menu-item" href="{{route('admin.tags.create')}}" data-i18n="nav.dash.crypto">أضافة شعار جديد </a>
                     </li>
                 </ul>
             </li>

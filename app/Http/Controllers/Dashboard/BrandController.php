@@ -17,9 +17,9 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $brands= Brand::orderBy('id')->paginate(PAGINATION_COUNT);
+        $brands = Brand::orderBy('id')->paginate(PAGINATION_COUNT);
 
-        return view('dashboard.brands.index',compact('brands'));
+        return view('dashboard.brands.index', compact('brands'));
     }
 
     /**
@@ -35,28 +35,29 @@ class BrandController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(BrandRequest$request)
+    public function store(BrandRequest $request)
     {
-       $photo= $request->file('photo');
 
-      try {
-            if (!$request->has('is_active'))
-                $request->request->add(['is_active' => 0]);
-            else
-                $request->request->add(['is_active' => 1]);
+        if (!$request->has('is_active'))
+            $request->request->add(['is_active' => 0]);
+        else
+            $request->request->add(['is_active' => 1]);
 
-            $fileName='';
-            if($photo){
-                $fileName= uploadImage('brands',$photo);
+        try {
+
+            $photo = $request->file('photo');
+            $fileName = '';
+            if ($photo) {
+                $fileName = uploadImage('brands', $photo);
             }
 
             DB::beginTransaction();
             $brand = Brand::create([
-                'is_active'=>$request->is_active,
-                'photo'=>$fileName,
+                'is_active' => $request->is_active,
+                'photo' => $fileName,
             ]);
             $brand->name = $request->name;
             $brand->save();
@@ -71,7 +72,7 @@ class BrandController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -82,7 +83,7 @@ class BrandController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -98,8 +99,8 @@ class BrandController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(BrandRequest $request, $id)
@@ -109,18 +110,27 @@ class BrandController extends Controller
         if (!$brand)
             return redirect()->route('admin.brands')->with(['error' => 'هذه الماركة غير موجوده']);
 
+
+        if (!$request->has('is_active')) $request->request->add(['is_active' => 0]);
+        else $request->request->add(['is_active' => 1]);
+
         try {
-            if (!$request->has('is_active'))
-                $request->request->add(['is_active' => 0]);
-            else
-                $request->request->add(['is_active' => $brand->is_active]);
+            if ($request->hasFile('photo')) {
+                deleteImage('brands', $brand->photo);
+                $photo = uploadImage('brands', $request->file('photo'));
+            } else $photo = $brand->photo;
 
 
             DB::beginTransaction();
-            $brand = Brand::update([
-                $request->only(['photo','is_active'])
+            $brand->update([
+                'is_active' => $request->is_active,
+                'photo' => $photo,
             ]);
-            $brand->name = $request->name;
+
+            if ($request->has('name')) {
+                $brand->name = $request->name;
+            }
+
             $brand->save();
             DB::commit();
 
@@ -128,13 +138,12 @@ class BrandController extends Controller
         } catch (\Exception $ex) {
             return redirect()->route('admin.brands')->with(['error' => 'هناك خطأ ما يرجى المحاوله فيما بعد']);
         }
-
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -144,6 +153,7 @@ class BrandController extends Controller
             return redirect()->route('admin.brands')->with(['error' => 'هذه الماركة غير موجوده']);
 
         try {
+            deleteImage('brands', $brand->photo);
             $brand->delete();
             return redirect()->route('admin.brands')->with(['success' => 'تم الحذف بنجاح']);
         } catch (\Exception $ex) {

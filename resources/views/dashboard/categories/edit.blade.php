@@ -9,7 +9,8 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">الرئيسية </a>
                                 </li>
-                                <li class="breadcrumb-item"><a href="{{route('admin.categories','main')}}"> الاقسام الرئيسية </a>
+                                <li class="breadcrumb-item"><a href="{{route('admin.categories','main')}}"> الاقسام
+                                        الرئيسية </a>
                                 </li>
                                 <li class="breadcrumb-item active"> تعديل - {{$category -> name}}
                                 </li>
@@ -42,7 +43,8 @@
                                 @include('dashboard.includes.alerts.errors')
                                 <div class="card-content collapse show">
                                     <div class="card-body">
-                                        <form class="form" action="{{route('admin.categories.update', $category->id)}}"
+                                        <form class="form"
+                                              action="{{route('admin.categories.update', $category->slug)}}"
                                               method="post"
                                               enctype="multipart/form-data">
                                             @csrf
@@ -57,7 +59,7 @@
 
                                             <div class="form-group">
                                                 <div class="text-center">
-                                                    <img src=""
+                                                    <img src="{{asset('assets/images/categories/'.$category->photo)}}"
                                                          class="rounded-circle height-150"
                                                          alt="صورة القسم">
                                                 </div>
@@ -90,21 +92,21 @@
                                                             @enderror
                                                         </div>
                                                     </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="projectinput1">الرابط </label>
-                                                            <input type="text" value="{{$category->slug}} " id="slug"
-                                                                   class="form-control"
-                                                                   placeholder="{{$category->slug}}"
-                                                                   name="slug">
-                                                            @error("slug")
-                                                            <span class="text-danger">{{$message}}</span>
-                                                            @enderror
+                                                    @if(!($category->parent_id==null))
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="projectinput1">الاسم بالرابط </label>
+                                                                <input type="text" value="{{$category->slug}}" id="slug"
+                                                                       class="form-control"
+                                                                       placeholder="{{$category->slug}}"
+                                                                       name="slug">
+                                                                @error("slug")
+                                                                <span class="text-danger">{{$message}}</span>
+                                                                @enderror
+                                                            </div>
                                                         </div>
-                                                    </div>
                                                 </div>
-
+                                                @endif
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group mt-1">
@@ -127,11 +129,16 @@
                                                         @if(!$category->parent_id == null)
                                                             <div class="form-group">
                                                                 <label for="projectinput1">القسم الاساسى </label>
-                                                                <select  class="select2 form-control col-md-6"  name="parent_id" >
-                                                                    <option value="" disabled selected>اختار القسم الرئيسى</option>
+                                                                <select class="select2 form-control col-md-6"
+                                                                        name="parent_id">
+                                                                    <option value="" disabled selected>اختار القسم
+                                                                        الرئيسى
+                                                                    </option>
 
                                                                     @foreach($categories as $mainCategory)
-                                                                        <option class="dropdown-item" value="{{$mainCategory->id}}" @if ($mainCategory->id == $category->parent_id) selected @endif>
+                                                                        <option class="dropdown-item"
+                                                                                value="{{$mainCategory->id}}"
+                                                                                @if ($mainCategory->id == $category->parent_id) selected @endif>
                                                                             {{$mainCategory->name}}
                                                                         </option>
                                                                     @endforeach
