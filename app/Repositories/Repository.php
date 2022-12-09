@@ -14,7 +14,7 @@ class Repository implements \App\Http\Interfaces\RepositoryInterface
         $this->model  = $model;
     }
 
-    public function all()
+    public function index()
     {
        return $this->model->all();
     }
@@ -38,5 +38,21 @@ class Repository implements \App\Http\Interfaces\RepositoryInterface
     public function show($id)
     {
         return $this->model;
+    }
+
+    // Get the associated model
+    public function getModel(){
+        return $this->model;
+    }
+
+    // Set the associated model
+    public function setModel($model){
+        $this->model = $model;
+        return $this;
+    }
+
+    //Eager load database relationships
+    public function with($relations){
+        return $this->model->with($relations);
     }
 }

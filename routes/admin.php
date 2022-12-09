@@ -61,6 +61,17 @@ Route::group(
             });
             // End Brands
 
+            // Products
+            Route::group(['prefix' => 'products'], function () {
+                Route::get('/', 'ProductController@index')->name('admin.products');
+                Route::get('create-general', 'ProductController@create')->name('admin.products.create.general');
+                Route::post('store', 'ProductController@store')->name('admin.products.store.general');
+                Route::get('edit/{id}', 'ProductController@edit')->name('admin.products.edit.general');
+                Route::put('update/{id}', 'ProductController@update')->name('admin.products.update.general');
+                Route::get('delete/{id}', 'ProductController@destroy')->name('admin.products.delete.general');
+            });
+            // End Products
+
             // tags
             Route::group(['prefix' => 'tags'], function () {
                 Route::get('/', 'TagController@index')->name('admin.tags');

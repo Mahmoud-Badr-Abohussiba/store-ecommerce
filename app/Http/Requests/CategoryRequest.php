@@ -31,7 +31,7 @@ class CategoryRequest extends FormRequest
                 Rule::in(CategoryType::mainCategory,CategoryType::subCategory)
             ],
             'name'=>'required',
-            'slug' => ['min:1|unique:news,slug,' .$slug,],
+            'slug' => ['min:1|unique:categories,slug,' .$slug,],
             'photo' => 'required_without:id|mimes:jpg,jpeg,png',
         ];
     }
