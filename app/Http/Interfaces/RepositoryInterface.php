@@ -4,7 +4,7 @@ namespace App\Http\Interfaces;
 
 interface RepositoryInterface
 {
-   public function all();
+   public function index();
 
    public function create(array $data);
 

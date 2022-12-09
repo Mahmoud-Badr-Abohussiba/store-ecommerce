@@ -1,0 +1,207 @@
+@extends('layouts.admin')
+@section('content')
+    <div class="app-content content">
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-6 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <div class="breadcrumb-wrapper col-12">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">الرئيسية </a>
+                                </li>
+                                <li class="breadcrumb-item"><a href="{{route('admin.products')}}"> المنتجات </a>
+                                </li>
+                                <li class="breadcrumb-item active">اضافة منتج جديد
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-body">
+                <!-- Basic form layout section start -->
+                <section id="basic-form-layouts">
+                    <div class="row match-height">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title" id="basic-layout-form">بيانات المنتج الاساسيه </h4>
+                                    <a class="heading-elements-toggle"><i
+                                            class="la la-ellipsis-v font-medium-3"></i></a>
+                                    <div class="heading-elements">
+                                        <ul class="list-inline mb-0">
+                                            <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+                                            <li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
+                                            <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                                            <li><a data-action="close"><i class="ft-x"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                @include('dashboard.includes.alerts.success')
+                                @include('dashboard.includes.alerts.errors')
+                                <div class="card-content collapse show">
+                                    <div class="card-body">
+                                        <form class="form" action="{{route('admin.products.store.general')}}"
+                                              method="post"
+                                              enctype="multipart/form-data">
+                                            @csrf
+
+                                            <div class="form-body">
+
+                                                <h4 class="form-section"><i class="ft-home"></i>بيانات المنتج</h4>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="projectinput1">الاسم</label>
+                                                            <input type="text" value="{{old('name')}}" id="name"
+                                                                   class="form-control"
+                                                                   placeholder="{{old('name')}}"
+                                                                   name="name">
+                                                            @error("name")
+                                                            <span class="text-danger">{{$message}}</span>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="projectinput1">الوصف</label>
+                                                            <input type="text" value="{{old('description')}}" id="description"
+                                                                   class="form-control"
+                                                                   placeholder="{{old('description')}}"
+                                                                   name="description">
+                                                            @error("description")
+                                                            <span class="text-danger">{{$message}}</span>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="projectinput1">الوصف المختصر</label>
+                                                            <input type="text" value="{{old('short_description')}}" id="short_description"
+                                                                   class="form-control"
+
+                                                                   placeholder="{{old('short_description')}}"
+                                                                   name="short_description">
+                                                            @error("short_description")
+                                                            <span class="text-danger">{{$message}}</span>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-3" id="cats_list">
+                                                        <div class="form-group" >
+                                                            <label for="projectinput1">القسم  </label>
+                                                            <select  class="form-control select2" multiple  name="categories[]">
+{{--                                                                <option value="" disabled selected>اختار القسم</option>--}}
+                                                                @foreach($data['categories'] as $category)
+                                                                    <option class="dropdown-item" value="{{$category->id}}">
+                                                                        {{$category->name}}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        @error("categories[]")
+                                                        <span class="text-danger">{{$message}}</span>
+                                                        @enderror
+                                                    </div>
+
+                                                    <div class="col-md-3" id="tags_list">
+                                                        <div class="form-group" >
+                                                            <label for="projectinput1">العلامات الدلاليه</label>
+                                                            <select  class="form-control select2" multiple  name="tags[]">
+{{--                                                                <option value="" disabled selected>اختار العلامه الدلاليه</option>--}}
+                                                                @foreach($data['tags'] as $tag)
+                                                                    <option class="dropdown-item" value="{{$tag->id}}">
+                                                                        {{$tag->name}}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        @error("tags[]")
+                                                        <span class="text-danger">{{$message}}</span>
+                                                        @enderror
+                                                    </div>
+
+                                                    <div class="col-md-3" id="tags_list">
+                                                        <div class="form-group" >
+                                                            <label for="projectinput1">الماركه</label>
+                                                            <select  class=" select2 form-control"  name="brand_id">
+                                                                <option value="" disabled selected>اختار الماركه</option>
+                                                                @foreach($data['brands'] as $brand)
+                                                                    <option class="dropdown-item" value="{{$brand->id}}">
+                                                                        {{$brand->name}}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        @error("brand_id")
+                                                        <span class="text-danger">{{$message}}</span>
+                                                        @enderror
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group mt-1">
+                                                            <label for="switcheryColor4"
+                                                                   class="card-title ml-1">الحالة </label>
+                                                            <input type="checkbox" value="1"
+                                                                   name="is_active"
+                                                                   id="switcheryColor4"
+                                                                   class="switchery" data-color="success"
+                                                                   checked/>
+
+                                                            @error("is_active")
+                                                            <span class="text-danger">{{$message }}</span>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="form-actions">
+                                                <button type="button" class="btn btn-warning mr-1"
+                                                        onclick="history.back();">
+                                                    <i class="ft-x"></i> تراجع
+                                                </button>
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="la la-check-square-o"></i> حفظ
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- // Basic form layout section end -->
+            </div>
+        </div>
+    </div>
+@endsection
+{{--@section('script')--}}
+
+{{--    <script>--}}
+{{--        $('input:radio[name="type"]').change(--}}
+{{--            function(){--}}
+{{--                if (this.checked && this.value == 'sub') {  // 1 if main cat - 2 if sub cat--}}
+{{--                    $('#cats_list').removeClass('hidden');--}}
+{{--                }else{--}}
+{{--                    $('#cats_list').addClass('hidden');--}}
+{{--                }--}}
+{{--            });--}}
+{{--    </script>--}}
+{{--@stop--}}
