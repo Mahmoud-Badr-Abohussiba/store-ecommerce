@@ -65,10 +65,36 @@ Route::group(
             Route::group(['prefix' => 'products'], function () {
                 Route::get('/', 'ProductController@index')->name('admin.products');
                 Route::get('create-general', 'ProductController@create')->name('admin.products.create.general');
-                Route::post('store', 'ProductController@store')->name('admin.products.store.general');
-                Route::get('edit/{id}', 'ProductController@edit')->name('admin.products.edit.general');
-                Route::put('update/{id}', 'ProductController@update')->name('admin.products.update.general');
-                Route::get('delete/{id}', 'ProductController@destroy')->name('admin.products.delete.general');
+                Route::post('store-general-information', 'ProductController@store')->name('admin.products.store.general');
+
+                Route::get('price/{id}', 'ProductController@getPrice')->name('admin.products.price');
+                Route::post('price', 'ProductController@saveProductPrice')->name('admin.products.price.store');
+
+                Route::get('stock/{id}', 'ProductController@getStock')->name('admin.products.stock');
+                Route::post('stock', 'ProductController@saveProductStock')->name('admin.products.stock.store');
+
+                Route::get('images/{id}', 'ProductController@addImages')->name('admin.products.images');
+                Route::post('images', 'ProductController@saveProductImages')->name('admin.products.images.store');
+                Route::post('images/db', 'ProductController@saveProductImagesDB')->name('admin.products.images.store.db');
+                ############################ product attributes & attributes options ############################################
+                Route::group(['prefix'=>'attributes'],function(){
+                   Route::get('/', 'AttributeController@index')->name('admin.product.attributes');
+                   Route::get('create', 'AttributeController@create')->name('admin.product.attributes.create');
+                   Route::post('store', 'AttributeController@store')->name('admin.product.attributes.store');
+                   Route::get('edit/{id}', 'AttributeController@edit')->name('admin.product.attributes.edit');
+                   Route::put('update/{id}', 'AttributeController@update')->name('admin.product.attributes.update');
+                   Route::get('delete/{id}', 'AttributeController@destroy')->name('admin.product.attributes.delete');
+
+                    ############################ attributes options ############################################
+                    Route::group(['prefix'=>'options'],function() {
+                        Route::get('/', 'OptionController@index')->name('options.index');
+                        Route::get('create', 'OptionController@create')->name('options.create');
+                        Route::post('store', 'OptionController@store')->name('options.store');
+                        Route::get('edit/{id}', 'OptionController@edit')->name('options.edit');
+                        Route::put('update/{id}', 'OptionController@update')->name('options.update');
+                        Route::get('delete/{id}', 'OptionController@destroy')->name('options.delete');
+                    });
+                });
             });
             // End Products
 

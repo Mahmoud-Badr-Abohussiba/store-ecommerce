@@ -11,7 +11,7 @@
                                 </li>
                                 <li class="breadcrumb-item"><a href="{{route('admin.products')}}"> المنتجات </a>
                                 </li>
-                                <li class="breadcrumb-item active">اضافة منتج جديد
+                                <li class="breadcrumb-item active">اضافة منتج جديد-  الخطوه الاولى
                                 </li>
                             </ol>
                         </div>

@@ -18,7 +18,7 @@ class TagController extends Controller
      */
     public function index()
     {
-        $tags= Tag::query()->orderBy('id', 'DESC')->paginate(PAGINATION_COUNT);
+        $tags= Tag::all()->sortByDesc('id')->toQuery()->paginate(PAGINATION_COUNT);
         return view('dashboard.tags.index', compact('tags'));
     }
 

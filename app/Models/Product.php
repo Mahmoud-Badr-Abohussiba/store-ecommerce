@@ -62,4 +62,16 @@ class Product extends Model
     public function images(){
         return $this->hasMany(ProductImage::class);
     }
+
+    public function getActive(){
+        return $this->is_active == 0 ? 'غير مفعل' : 'مفعل';
+    }
+
+    public function scopeActive($query){
+        return $query->where('is_active',1);
+    }
+
+    public function options(){
+        return $this->hasMany(Option::class);
+    }
 }

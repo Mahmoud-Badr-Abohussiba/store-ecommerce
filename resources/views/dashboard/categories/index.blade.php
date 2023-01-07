@@ -52,7 +52,7 @@
                                         @isset($categories)
                                             @if($categories->count() > 0)
                                                 <table
-                                                    class="table display nowrap table-striped table-bordered scroll-horizontal">
+                                                    class="table display nowrap table-striped table-bordered ">
                                                     <thead class="">
                                                     <tr>
                                                         <th>الاسم</th>
@@ -117,6 +117,7 @@
                             </div>
                         </div>
                     </div>
+                    <div class="justify-content-center d-flex">{!! $categories -> links() !!}</div>
                 </section>
             </div>
         </div>

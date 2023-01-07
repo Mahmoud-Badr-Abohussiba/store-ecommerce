@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Controllers\Enum\CategoryType;
+use App\Http\Enum\CategoryType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
